@@ -638,8 +638,8 @@
             'iDevIdCert': { 'title': false, 'content': false },
             'eui': { 'title': false, 'content': false },
             'threadVersion': { 'title': false, 'content': false },
-            'vendorName': { 'title': false, 'content': false },
-            'vendorModel': { 'title': false, 'content': false },
+            'vendorName': { 'title': true, 'content': false },
+            'vendorModel': { 'title': true, 'content': false },
             'vendorSwVersion': { 'title': false, 'content': false },
             'threadStackVersion': { 'title': false, 'content': false },
             'children': { 'title': false, 'content': false },
@@ -964,6 +964,12 @@
             console.log("Graph rendered");
         };
 
+        // Label shown in topology tooltips: rloc16 plus vendor name/model when available
+        $scope.nodeLabel = function(item) {
+            const name = [item.vendorName, item.vendorModel].filter(Boolean).join(' ');
+            return name ? `${name} (${item.rloc16})` : item.rloc16;
+        }
+
         // Build Topology by populating $scope.graphInfo based on $scope.networksDiagInfo
         $scope.buildTopology = function() {
             var nodeMap = {};
@@ -1262,7 +1268,7 @@
                 // Tooltip effect of mouseover on a node 
                 .on('mouseover', function(item) {
                     return tooltip.style('visibility', 'visible')
-                                  .text(item.rloc16);
+                                  .text($scope.nodeLabel(item));
                 })
                 .on('mousemove', function() {
                     return tooltip.style('top', (d3.event.pageY - 10) + 'px')
@@ -1284,7 +1290,7 @@
                 })
                 .on('mouseover', function(item) {
                     return tooltip.style('visibility', 'visible')
-                                  .text(item.rloc16);
+                                  .text($scope.nodeLabel(item));
                 })
                 .on('mousemove', function() {
                     return tooltip.style('top', (d3.event.pageY - 10) + 'px')
@@ -1310,7 +1316,7 @@
                         .transition()
                         .attr('r','9');
                     return tooltip.style('visibility', 'visible')
-                                  .text(item.rloc16);
+                                  .text($scope.nodeLabel(item));
                 })
                 .on('mousemove', function() {
                     return tooltip.style('top', (d3.event.pageY - 10) + 'px')
@@ -1344,7 +1350,7 @@
                         .transition()
                         .attr('r','8');
                     return tooltip.style('visibility', 'visible')
-                                  .text(item.rloc16);
+                                  .text($scope.nodeLabel(item));
                 })
                 .on('mousemove', function() {
                     return tooltip.style('top', (d3.event.pageY - 10) + 'px')
